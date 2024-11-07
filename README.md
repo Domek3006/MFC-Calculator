@@ -8,9 +8,11 @@
 - [x] Division
 - [x] Square root
 - [x] Clear display
-- [ ] Save result to memory
-- [ ] Switch to negative number
+- [x] Save result to memory
+- [x] Switch to negative number
 - [ ] Session history
 - [ ] Save session to file
-- [ ] Add display of currently processed values
+- [x] Add display of currently processed values
 - [ ] Keyboard support
+- [x] Backspace button
+- [ ] Fix square root display

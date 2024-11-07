@@ -14,6 +14,10 @@ private:
 	double m_PrevValue = 0.0;
 	char m_Operator = '\0';
 	bool m_NextValue = FALSE;
+	CString m_DisplayText;
+	CString m_DisplayEquasion;
+	CString m_Memory;
+	CFont m_ResultFont;
 
 // Konstrukcja
 public:
@@ -39,7 +43,6 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	CString m_DisplayText;
 	void AppendToDisplay(TCHAR c);
 	void ProcessOperation();
 	void UpdatePrevious();
@@ -62,4 +65,10 @@ public:
 	afx_msg void OnBnClickedButtonEq();
 	afx_msg void OnBnClickedButtonClr();
 	afx_msg void OnBnClickedButtonSqrt();
+	afx_msg void OnStnClickedStaticResult();
+	afx_msg void OnStnClickedStaticEqu();
+	afx_msg void OnBnClickedButtonMemory();
+	afx_msg void OnBnClickedButtonMemSave();
+	afx_msg void OnBnClickedButtonSign();
+	afx_msg void OnBnClickedButtonErase();
 };

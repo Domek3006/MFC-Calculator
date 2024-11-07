@@ -52,6 +52,7 @@ END_MESSAGE_MAP()
 
 CCalculatorMFCDlg::CCalculatorMFCDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_CALCULATORMFC_DIALOG, pParent)
+	, m_DisplayEquasion(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -60,6 +61,7 @@ void CCalculatorMFCDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_RESULT, m_DisplayText);
+	DDX_Text(pDX, IDC_STATIC_EQU, m_DisplayEquasion);
 }
 
 BEGIN_MESSAGE_MAP(CCalculatorMFCDlg, CDialogEx)
@@ -84,6 +86,12 @@ BEGIN_MESSAGE_MAP(CCalculatorMFCDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_EQ, &CCalculatorMFCDlg::OnBnClickedButtonEq)
 	ON_BN_CLICKED(IDC_BUTTON_CLR, &CCalculatorMFCDlg::OnBnClickedButtonClr)
 	ON_BN_CLICKED(IDC_BUTTON_SQRT, &CCalculatorMFCDlg::OnBnClickedButtonSqrt)
+	ON_STN_CLICKED(IDC_STATIC_RESULT, &CCalculatorMFCDlg::OnStnClickedStaticResult)
+	ON_STN_CLICKED(IDC_STATIC_EQU, &CCalculatorMFCDlg::OnStnClickedStaticEqu)
+	ON_BN_CLICKED(IDC_BUTTON_MEMORY, &CCalculatorMFCDlg::OnBnClickedButtonMemory)
+	ON_BN_CLICKED(IDC_BUTTON_MSAVE, &CCalculatorMFCDlg::OnBnClickedButtonMemSave)
+	ON_BN_CLICKED(IDC_BUTTON_SIGN, &CCalculatorMFCDlg::OnBnClickedButtonSign)
+	ON_BN_CLICKED(IDC_BUTTON_ERASE, &CCalculatorMFCDlg::OnBnClickedButtonErase)
 END_MESSAGE_MAP()
 
 
@@ -118,7 +126,10 @@ BOOL CCalculatorMFCDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Ustaw duże ikony
 	SetIcon(m_hIcon, FALSE);		// Ustaw małe ikony
 
+	m_ResultFont.CreatePointFont(180, _T("Arial"));
+	GetDlgItem(IDC_STATIC_RESULT)->SetFont(&m_ResultFont);
 	m_DisplayText = '0';
+	m_DisplayEquasion = "";
 	UpdateData(FALSE);
 
 	return TRUE;  // zwracaj wartość TRUE, dopóki fokus nie zostanie ustawiony na formant
@@ -186,6 +197,7 @@ void CCalculatorMFCDlg::AppendToDisplay(TCHAR c)
 	}
 	else {
 		m_DisplayText = '0';
+		if (m_Operator == '=') m_DisplayEquasion = "";
 		m_NextValue = FALSE;
 	}
 
@@ -237,9 +249,13 @@ void CCalculatorMFCDlg::UpdatePrevious()
 {
 	/*CString text;
 	m_DisplayText.GetWindowText(text);*/
+	CString str;
 	UpdateData(TRUE);
 	m_PrevValue = wcstod(m_DisplayText, NULL);
 	m_NextValue = TRUE;
+	str.Format(_T("%g"), m_CurrentValue);
+	m_DisplayEquasion += str + ' ' + m_Operator + ' ';
+	UpdateData(FALSE);
 }
 
 void CCalculatorMFCDlg::UpdateCurrent()
@@ -248,6 +264,8 @@ void CCalculatorMFCDlg::UpdateCurrent()
 	m_DisplayText.GetWindowText(text);*/
 	UpdateData(TRUE);
 	m_CurrentValue = wcstod(m_DisplayText, NULL);
+	if (m_Operator == '=') m_DisplayEquasion = "";
+	UpdateData(FALSE);
 }
 
 void CCalculatorMFCDlg::OnBnClickedButton1()
@@ -314,17 +332,15 @@ void CCalculatorMFCDlg::OnBnClickedButtonComma()
 	//CString text;
 	//m_DisplayText.GetWindowText(text);
 	UpdateData(TRUE);
+	if (m_NextValue) AppendToDisplay(_T('0.'));
 	if(m_DisplayText.Find('.') == -1) AppendToDisplay(_T('.'));
 }
 
 
 void CCalculatorMFCDlg::OnBnClickedButtonPlus()
 {
-	if (m_Operator != '\0') 
-	{
-		UpdateCurrent();
-		ProcessOperation();
-	}
+	UpdateCurrent();
+	if (m_Operator != '\0') ProcessOperation();
 	m_Operator = '+';
 	UpdatePrevious();
 }
@@ -332,11 +348,8 @@ void CCalculatorMFCDlg::OnBnClickedButtonPlus()
 
 void CCalculatorMFCDlg::OnBnClickedButtonMinus()
 {
-	if (m_Operator != '\0')
-	{
-		UpdateCurrent();
-		ProcessOperation();
-	}
+	UpdateCurrent();
+	if (m_Operator != '\0') ProcessOperation();
 	m_Operator = '-';
 	UpdatePrevious();
 }
@@ -344,11 +357,8 @@ void CCalculatorMFCDlg::OnBnClickedButtonMinus()
 
 void CCalculatorMFCDlg::OnBnClickedButtonMult()
 {
-	if (m_Operator != '\0')
-	{
-		UpdateCurrent();
-		ProcessOperation();
-	}
+	UpdateCurrent();
+	if (m_Operator != '\0') ProcessOperation();
 	m_Operator = '*';
 	UpdatePrevious();
 }
@@ -356,11 +366,8 @@ void CCalculatorMFCDlg::OnBnClickedButtonMult()
 
 void CCalculatorMFCDlg::OnBnClickedButtonDiv()
 {
-	if (m_Operator != '\0')
-	{
-		UpdateCurrent();
-		ProcessOperation();
-	}
+	UpdateCurrent();
+	if (m_Operator != '\0') ProcessOperation();
 	m_Operator = '/';
 	UpdatePrevious();
 }
@@ -370,7 +377,7 @@ void CCalculatorMFCDlg::OnBnClickedButtonEq()
 {
 	UpdateCurrent();
 	ProcessOperation();
-	m_Operator = '\0';
+	m_Operator = '=';
 	UpdatePrevious();
 }
 
@@ -381,6 +388,7 @@ void CCalculatorMFCDlg::OnBnClickedButtonClr()
 	m_CurrentValue = 0.0;
 	m_Operator = '\0';
 	m_DisplayText = '0';
+	m_DisplayEquasion = "";
 	UpdateData(FALSE);
 }
 
@@ -400,4 +408,50 @@ void CCalculatorMFCDlg::OnBnClickedButtonSqrt()
 	ProcessOperation();
 	m_Operator = '\0';
 	UpdatePrevious();
+}
+
+
+void CCalculatorMFCDlg::OnStnClickedStaticResult()
+{
+	// TODO: Add your control notification handler code here
+}
+
+
+void CCalculatorMFCDlg::OnStnClickedStaticEqu()
+{
+	// TODO: Add your control notification handler code here
+}
+
+
+void CCalculatorMFCDlg::OnBnClickedButtonMemSave()
+{
+	UpdateData(TRUE);
+	m_Memory = m_DisplayText;
+}
+
+
+void CCalculatorMFCDlg::OnBnClickedButtonMemory()
+{
+	m_DisplayText = m_Memory;
+	UpdateData(FALSE);
+}
+
+
+void CCalculatorMFCDlg::OnBnClickedButtonSign()
+{
+	UpdateData(TRUE);
+	if (m_DisplayText == '0') return;
+	if (m_DisplayText[0] != '-') m_DisplayText = '-' + m_DisplayText;
+	else m_DisplayText.Delete(0,1);
+	UpdateData(FALSE);
+}
+
+
+void CCalculatorMFCDlg::OnBnClickedButtonErase()
+{
+	UpdateData(TRUE);
+	int textLen = m_DisplayText.GetLength();
+	if (textLen == 1) m_DisplayText = '0';
+	else m_DisplayText.Delete(textLen - 1);
+	UpdateData(FALSE);
 }
