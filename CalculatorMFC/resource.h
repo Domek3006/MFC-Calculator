@@ -8,6 +8,7 @@
 #define IDD_CALCULATORMFC_DIALOG        102
 #define IDD_CALCULATOR_DLG              102
 #define IDR_MAINFRAME                   128
+#define IDR_MENU1                       132
 #define IDC_BUTTON_1                    1000
 #define IDC_BUTTON_2                    1001
 #define IDC_BUTTON_3                    1002
@@ -33,16 +34,18 @@
 #define IDC_BUTTON_MSAVE                1020
 #define IDC_BUTTON_MEMORY               1021
 #define IDC_BUTTON_SIGN                 1022
-#define IDC_BUTTON3                     1023
 #define IDC_BUTTON_ERASE                1023
+#define IDC_LIST_HISTORY                1024
+#define IDC_MFCMENUBUTTON1              1025
+#define ID_FILE_EXPORT                  32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        130
-#define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1024
+#define _APS_NEXT_RESOURCE_VALUE        133
+#define _APS_NEXT_COMMAND_VALUE         32772
+#define _APS_NEXT_CONTROL_VALUE         1026
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

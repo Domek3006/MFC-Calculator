@@ -10,9 +10,11 @@
 - [x] Clear display
 - [x] Save result to memory
 - [x] Switch to negative number
-- [ ] Session history
-- [ ] Save session to file
+- [x] Session history
+- [x] Save session to file
 - [x] Add display of currently processed values
-- [ ] Keyboard support
+- [x] Keyboard support
 - [x] Backspace button
-- [ ] Fix square root display
+- [~] Fix square root display
+- [x] Extra keyboard button support
+- [x] Order of operations brackets

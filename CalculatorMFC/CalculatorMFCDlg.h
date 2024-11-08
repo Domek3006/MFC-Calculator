@@ -1,8 +1,10 @@
 ﻿
 // CalculatorMFCDlg.h: plik nagłówkowy
 //
+#include "CListHistory.h"
 
 #pragma once
+
 
 
 // okno dialogowe CCalculatorMFCDlg
@@ -18,6 +20,7 @@ private:
 	CString m_DisplayEquasion;
 	CString m_Memory;
 	CFont m_ResultFont;
+	CListHistory m_ListHistory;
 
 // Konstrukcja
 public:
@@ -30,7 +33,7 @@ public:
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// obsługa DDX/DDV
-
+	BOOL PreTranslateMessage(MSG* pMsg) override;
 
 // Implementacja
 protected:
@@ -47,6 +50,7 @@ public:
 	void ProcessOperation();
 	void UpdatePrevious();
 	void UpdateCurrent();
+	void AddToHistory();
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
@@ -71,4 +75,5 @@ public:
 	afx_msg void OnBnClickedButtonMemSave();
 	afx_msg void OnBnClickedButtonSign();
 	afx_msg void OnBnClickedButtonErase();
+	afx_msg void OnFileExport();
 };

@@ -19,6 +19,29 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
+// Polish (Poland) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PLK)
+LANGUAGE LANG_POLISH, SUBLANG_DEFAULT
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "Export (Ctrl + S)",           ID_FILE_EXPORT
+    END
+END
+
+#endif    // Polish (Poland) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
 // English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
@@ -91,12 +114,14 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
 
-IDD_CALCULATOR_DLG DIALOGEX 0, 0, 391, 200
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+IDD_CALCULATOR_DLG DIALOGEX 0, 0, 543, 200
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 EXSTYLE WS_EX_APPWINDOW
+CAPTION "Calculator"
+MENU IDR_MENU1
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    RTEXT           "0",IDC_STATIC_RESULT,21,33,351,40,SS_CENTERIMAGE | SS_SUNKEN | WS_BORDER | NOT WS_GROUP
+    RTEXT           "0",IDC_STATIC_RESULT,21,33,337,40,SS_CENTERIMAGE | SS_SUNKEN | WS_BORDER | NOT WS_GROUP
     PUSHBUTTON      "1",IDC_BUTTON_1,24,84,50,14
     PUSHBUTTON      "2",IDC_BUTTON_2,78,84,50,14
     PUSHBUTTON      "3",IDC_BUTTON_3,134,84,50,14
@@ -115,11 +140,12 @@ BEGIN
     PUSHBUTTON      "=",IDC_BUTTON_EQ,247,84,50,14
     PUSHBUTTON      "C",IDC_BUTTON_CLR,247,102,50,14
     PUSHBUTTON      "√",IDC_BUTTON_SQRT,190,156,50,14
-    RTEXT           "",IDC_STATIC_EQU,21,22,350,8,NOT WS_GROUP
-    PUSHBUTTON      "SM",IDC_BUTTON_MSAVE,247,121,50,14
+    RTEXT           "",IDC_STATIC_EQU,21,22,336,8,NOT WS_GROUP
+    PUSHBUTTON      "MS",IDC_BUTTON_MSAVE,247,121,50,14
     PUSHBUTTON      "M",IDC_BUTTON_MEMORY,247,139,50,14
     PUSHBUTTON      "±",IDC_BUTTON_SIGN,134,156,50,14
     PUSHBUTTON      "⌫",IDC_BUTTON_ERASE,301,84,50,14
+    LISTBOX         IDC_LIST_HISTORY,363,7,173,186,LBS_OWNERDRAWVARIABLE | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
 END
 
 
@@ -181,7 +207,7 @@ BEGIN
     IDD_CALCULATOR_DLG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 384
+        RIGHTMARGIN, 536
         TOPMARGIN, 7
         BOTTOMMARGIN, 193
     END
@@ -196,7 +222,32 @@ END
 
 IDD_CALCULATOR_DLG AFX_DIALOG_LAYOUT
 BEGIN
-    0
+    0,
+    0, 0, 100, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    100, 0, 0, 100
 END
 
 

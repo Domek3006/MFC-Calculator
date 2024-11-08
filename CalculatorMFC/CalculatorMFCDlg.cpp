@@ -62,6 +62,7 @@ void CCalculatorMFCDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STATIC_RESULT, m_DisplayText);
 	DDX_Text(pDX, IDC_STATIC_EQU, m_DisplayEquasion);
+	DDX_Control(pDX, IDC_LIST_HISTORY, m_ListHistory);
 }
 
 BEGIN_MESSAGE_MAP(CCalculatorMFCDlg, CDialogEx)
@@ -92,6 +93,7 @@ BEGIN_MESSAGE_MAP(CCalculatorMFCDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_MSAVE, &CCalculatorMFCDlg::OnBnClickedButtonMemSave)
 	ON_BN_CLICKED(IDC_BUTTON_SIGN, &CCalculatorMFCDlg::OnBnClickedButtonSign)
 	ON_BN_CLICKED(IDC_BUTTON_ERASE, &CCalculatorMFCDlg::OnBnClickedButtonErase)
+	ON_COMMAND(ID_FILE_EXPORT, &CCalculatorMFCDlg::OnFileExport)
 END_MESSAGE_MAP()
 
 
@@ -184,6 +186,88 @@ HCURSOR CCalculatorMFCDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+BOOL CCalculatorMFCDlg::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		switch (pMsg->wParam)
+		{
+		case '0':
+		case VK_NUMPAD0:
+			OnBnClickedButton0();
+			break;
+		case '1':
+		case VK_NUMPAD1:
+			OnBnClickedButton1();
+			break;
+		case '2':
+		case VK_NUMPAD2:
+			OnBnClickedButton2();
+			break;
+		case '3':
+		case VK_NUMPAD3:
+			OnBnClickedButton3();
+			break;
+		case '4':
+		case VK_NUMPAD4:
+			OnBnClickedButton4();
+			break;
+		case '5':
+		case VK_NUMPAD5:
+			OnBnClickedButton5();
+			break;
+		case '6':
+		case VK_NUMPAD6:
+			OnBnClickedButton6();
+			break;
+		case '7':
+		case VK_NUMPAD7:
+			OnBnClickedButton7();
+			break;
+		case '8':
+		case VK_NUMPAD8:
+			OnBnClickedButton8();
+			break;
+		case '9':
+		case VK_NUMPAD9:
+			OnBnClickedButton9();
+			break;
+		case '+':
+		case VK_ADD:
+			OnBnClickedButtonPlus();
+			break;
+		case '-':
+		case VK_SUBTRACT:
+			OnBnClickedButtonMinus();
+			break;
+		case '*':
+		case VK_MULTIPLY:
+			OnBnClickedButtonMult();
+			break;
+		case '/':
+		case VK_DIVIDE:
+			OnBnClickedButtonDiv();
+			break;
+		case VK_DECIMAL:
+			OnBnClickedButtonComma();
+			break;
+		case VK_BACK:
+			OnBnClickedButtonErase();
+			break;
+		case VK_RETURN:
+			OnBnClickedButtonEq();
+			break;
+		case 'S':
+			if (GetKeyState(VK_CONTROL) & 0x8000) OnFileExport();
+			break;
+		default:
+			return CDialogEx::PreTranslateMessage(pMsg);
+		}
+		return TRUE;
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
 void CCalculatorMFCDlg::AppendToDisplay(TCHAR c)
 {
 	//CString text;
@@ -254,7 +338,8 @@ void CCalculatorMFCDlg::UpdatePrevious()
 	m_PrevValue = wcstod(m_DisplayText, NULL);
 	m_NextValue = TRUE;
 	str.Format(_T("%g"), m_CurrentValue);
-	m_DisplayEquasion += str + ' ' + m_Operator + ' ';
+	if((m_Operator == '*' || m_Operator == '/') && m_DisplayEquasion.FindOneOf(_T("+-")) != -1) m_DisplayEquasion = _T("(") + m_DisplayEquasion + str + _T(") ") + m_Operator + _T(" ");
+	else m_DisplayEquasion += str + ' ' + m_Operator + ' ';
 	UpdateData(FALSE);
 }
 
@@ -266,6 +351,13 @@ void CCalculatorMFCDlg::UpdateCurrent()
 	m_CurrentValue = wcstod(m_DisplayText, NULL);
 	if (m_Operator == '=') m_DisplayEquasion = "";
 	UpdateData(FALSE);
+}
+
+void CCalculatorMFCDlg::AddToHistory()
+{
+	m_ListHistory.AddString(m_DisplayEquasion + '\n' + m_DisplayText);
+	//m_ListHistory.InsertString(0, m_DisplayEquasion + '\n' + m_DisplayText);
+	m_ListHistory.SetCurSel(m_ListHistory.GetCount() - 1);
 }
 
 void CCalculatorMFCDlg::OnBnClickedButton1()
@@ -332,7 +424,7 @@ void CCalculatorMFCDlg::OnBnClickedButtonComma()
 	//CString text;
 	//m_DisplayText.GetWindowText(text);
 	UpdateData(TRUE);
-	if (m_NextValue) AppendToDisplay(_T('0.'));
+	if (m_NextValue & 1) AppendToDisplay(_T('0')); AppendToDisplay(_T('.'));
 	if(m_DisplayText.Find('.') == -1) AppendToDisplay(_T('.'));
 }
 
@@ -379,6 +471,7 @@ void CCalculatorMFCDlg::OnBnClickedButtonEq()
 	ProcessOperation();
 	m_Operator = '=';
 	UpdatePrevious();
+	AddToHistory();
 }
 
 
@@ -404,10 +497,14 @@ void CCalculatorMFCDlg::OnBnClickedButtonSqrt()
 		MessageBox(_T("Cannot perform operation!"));
 		return;
 	}
+	m_DisplayEquasion += _T("sqrt(") + m_DisplayText + _T(") =");
 	m_CurrentValue = sqrt(m_CurrentValue);
 	ProcessOperation();
-	m_Operator = '\0';
-	UpdatePrevious();
+	m_Operator = '=';
+	UpdateData(TRUE);
+	m_PrevValue = wcstod(m_DisplayText, NULL);
+	AddToHistory();
+	UpdateData(FALSE);
 }
 
 
@@ -454,4 +551,35 @@ void CCalculatorMFCDlg::OnBnClickedButtonErase()
 	if (textLen == 1) m_DisplayText = '0';
 	else m_DisplayText.Delete(textLen - 1);
 	UpdateData(FALSE);
+}
+
+void CCalculatorMFCDlg::OnFileExport()
+{
+	CFileDialog fileDlg(FALSE, _T("txt"), _T("MathExport.txt"), OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY, _T("Text Files (*.txt)|*.txt|All Files (*.*)|*.*||"));
+
+	if (fileDlg.DoModal() == IDOK)
+	{
+		CString filePath = fileDlg.GetPathName();
+
+		CStdioFile file;
+		if (!file.Open(filePath, CFile::modeCreate | CFile::modeWrite | CFile::typeText))
+		{
+			AfxMessageBox(_T("Error opening file"));
+			return;
+		}
+
+		CString itemText;
+		int itemCount = m_ListHistory.GetCount();
+
+		for (int i = 0; i < itemCount; ++i)
+		{
+			m_ListHistory.GetText(i, itemText);
+			itemText.Replace(_T("\n"), _T(""));
+			file.WriteString(itemText + _T("\n"));
+		}
+
+		file.Close();
+
+		AfxMessageBox(_T("File saved successfully."));
+	}
 }
